@@ -91,9 +91,8 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
   <div class="switch" role="group" aria-label="Section">
     <button type="button" data-v="openers">Openers</button>
     <button type="button" data-v="unlocks">Job unlocks</button>
-    <button type="button" data-v="plugins">Plugin guide</button>
+    <button type="button" data-v="plugins">Overall QOL FFXIV Guide, including plugins</button>
     <button type="button" data-v="catalogue">Full catalogue</button>
-    <button type="button" data-v="risk">Ban risk</button>
   </div>
 </header>
 
@@ -116,6 +115,7 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
   <div class="panel"><h3>How the ecosystem works</h3>%%ECO%%</div>
   <div class="panel"><h3>Custom repository URLs</h3><p>Paste these under Dalamud Settings, Experimental, Custom Plugin Repositories. Only add repos you trust.</p><div id="repos"></div></div>
   <div class="panel"><h3>Plugins that matter, by job to be done</h3>%%PLUGINS%%</div>
+  <div class="panel"><h3>Ban risk: read this before installing</h3>%%RISK%%</div>
 </section>
 
 <section class="view" id="catalogue" hidden>
@@ -131,10 +131,6 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
   </div>
 </section>
 
-<section class="view" id="risk" hidden>
-  <div class="panel"><h3>Read this before installing</h3>%%RISK%%</div>
-</section>
-
 <footer><b>Sources</b>%%SOURCES%%</footer>
 </div>
 
@@ -148,11 +144,11 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
   var btns=[].slice.call(document.querySelectorAll('.switch button'));
   function show(v){
     btns.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===v))});
-    ['openers','unlocks','plugins','catalogue','risk'].forEach(function(id){document.getElementById(id).hidden=id!==v});
+    ['openers','unlocks','plugins','catalogue'].forEach(function(id){document.getElementById(id).hidden=id!==v});
   }
   btns.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.v)})});
-  var h=(location.hash||'').slice(1);
-  show(['openers','unlocks','plugins','catalogue','risk'].indexOf(h)>=0?h:'openers');
+  var h=(location.hash||'').slice(1);if(h==='risk')h='plugins';
+  show(['openers','unlocks','plugins','catalogue'].indexOf(h)>=0?h:'openers');
 
   // openers
   function chip(o){return '<span class="o'+(/^Pot/.test(o)?' pot':'')+'">'+esc(o)+'</span>'}
