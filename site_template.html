@@ -86,7 +86,7 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
 <div class="wrap">
 <header>
   <h1>FFXIV Plugin and Opener Sheet</h1>
-  <p class="sub">All 22 job openers from your list, checked against The Balance, unlock quests for every class and job including crafters and gatherers, plus every plugin I could find in the official and main unofficial repositories.</p>
+  <p class="sub">All 22 job openers, checked against The Balance, unlock quests for every class and job including crafters and gatherers, plus every plugin I could find in the official and main unofficial repositories.</p>
   <div class="stamp">Dawntrail 7.56 · Researched Oct 31, 2026 · Evercold arrives Feb 23, 2027</div>
   <div class="switch" role="group" aria-label="Section">
     <button type="button" data-v="openers">Openers</button>
@@ -165,7 +165,7 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
         return '<li><span class="n">'+esc(s.n.replace(' to ','–').replace(' onward','+'))+'</span><div class="act">'+s.o0.map(chip).join('')+'<span class="g">'+esc(s.a)+'</span>'+s.o.map(chip).join('')+'</div></li>'
       }).join('')+'</ol>';
     }).join('');
-    return '<article class="job '+j.role+'"><div class="job-h"><h4>'+esc(j.name)+'</h4><span>'+esc(j.meta)+'</span>'+(j.better?'<span class="newer">Newer than your link</span>':'')+'</div><div class="job-b">'+body+'</div></article>';
+    return '<article class="job '+j.role+'"><div class="job-h"><h4>'+esc(j.name)+'</h4><span>'+esc(j.meta)+'</span>'+(j.better?'<span class="newer">Updated in 7.5</span>':'')+'</div><div class="job-b">'+body+'</div></article>';
   }
   var groups=[];D.jobs.forEach(function(j){if(groups.indexOf(j.group)<0)groups.push(j.group)});
   var wrap=document.getElementById('board-wrap'),roles=document.getElementById('roles');
