@@ -1,0 +1,212 @@
+<title>FFXIV Plugin and Opener Sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Layout: sister sheet to the Aion macro board, set in aether blue. Each job card reads as a hotbar timeline:
+   GCDs run down the line, oGCDs hang off the step they weave after. Role colours match the game's party list. */
+:root{
+  --ink:#080d18; --aether:#10264a;
+  --panel:#121a2a; --panel-2:#1a2438; --edge:#2e3b55;
+  --text:#edf1f7; --muted:#9aa7bd; --dim:#74829a;
+  --crystal:#7fe3f2; --gold:#e4c675;
+  --tank:#5b9dff; --heal:#6fd08a; --dps:#ef6f6f;
+  --warn:#ff8a70; --hi:#ffd166;
+  --f-display:"Marcellus SC","Palatino Linotype",Georgia,serif;
+  --f-body:"Barlow","Segoe UI",system-ui,sans-serif;
+  --f-ui:"Barlow Condensed","Arial Narrow",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:radial-gradient(70% 34% at 50% 0%,var(--aether) 0%,transparent 72%),var(--ink);color:var(--text);font:15px/1.5 var(--f-body);
+  padding-block:clamp(20px,4vw,44px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-height:100%}
+.wrap{max-width:1360px;margin:0 auto;display:grid;gap:clamp(20px,3vw,32px);min-width:0}
+a{color:var(--crystal)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--crystal);outline-offset:2px}
+header{text-align:center;display:grid;gap:12px;justify-items:center}
+h1{margin:0;font:400 clamp(2rem,6vw,4.2rem)/1 var(--f-display);color:var(--crystal);text-wrap:balance;text-shadow:0 0 26px rgba(127,227,242,.3)}
+.sub{margin:0;color:var(--muted);max-width:72ch;text-wrap:balance}
+.stamp{font:600 .8rem/1.2 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.switch{display:inline-flex;flex-wrap:wrap;justify-content:center;border:1px solid var(--edge);background:#0c1322;padding:3px;gap:3px}
+.switch button{appearance:none;border:0;background:transparent;color:var(--muted);font:700 .95rem/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;padding:10px 18px;cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--crystal);color:#06222a}
+.filters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.filters button{appearance:none;background:#0c1322;border:1px solid var(--edge);color:var(--muted);font:600 .85rem/1 var(--f-ui);letter-spacing:.05em;padding:7px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{color:var(--text);border-color:var(--crystal)}
+.view{display:grid;gap:clamp(16px,2.4vw,24px);min-width:0}
+.panel{background:rgba(16,23,37,.94);border:1px solid var(--edge);padding:clamp(16px,2vw,24px);display:grid;gap:12px;align-content:start;min-width:0}
+.panel h3{margin:0;font:400 clamp(1.25rem,2vw,1.6rem)/1.1 var(--f-display);color:#fff;text-wrap:balance}
+.panel h4{margin:10px 0 0;font:700 .85rem/1.2 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.panel p{margin:0;max-width:85ch}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:5px}
+.panel b{color:#fff}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,22px)}
+@media (max-width:980px){.two{grid-template-columns:minmax(0,1fr)}}
+code{font:500 .85em/1.3 ui-monospace,Consolas,monospace;background:#0c1322;padding:1px 4px;overflow-wrap:anywhere}
+.tbl{overflow-x:auto;min-width:0}
+table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid #27324a;vertical-align:top}
+th{font:700 .7rem/1.2 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+td.num{text-align:right;white-space:nowrap}
+.group{margin:8px 0 -4px;font:400 1.5rem/1 var(--f-display);color:var(--gold)}
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,18px);align-items:start}
+@media (max-width:1180px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.board{grid-template-columns:minmax(0,1fr)}}
+.job{--r:var(--dps);background:var(--panel);border:1px solid var(--edge);border-top:3px solid var(--r);min-width:0;display:grid;align-content:start}
+.job.tank{--r:var(--tank)} .job.heal{--r:var(--heal)}
+.job-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:10px 12px;background:var(--panel-2);border-bottom:1px solid var(--edge)}
+.job-h h4{margin:0;font:400 1.3rem/1.1 var(--f-display);color:#fff}
+.job-h span{font:600 .76rem/1.2 var(--f-ui);letter-spacing:.06em;color:var(--muted)}
+.job-h .newer{color:#2b1f00;background:var(--hi);padding:3px 6px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.job-b{padding:10px 12px;display:grid;gap:9px;min-width:0}
+.pre{font:600 .9rem/1.35 var(--f-ui);color:var(--crystal)}
+.pre b{color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-size:.72rem;margin-right:6px}
+.sub-h{font:700 .78rem/1.2 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+ol.seq{list-style:none;margin:0;padding:0;display:grid;gap:3px}
+ol.seq li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:start;padding:3px 0;border-bottom:1px solid #1f2a40}
+.n{font:700 .85rem/1.5 var(--f-ui);color:var(--r);font-variant-numeric:tabular-nums;white-space:nowrap}
+.act{display:flex;flex-wrap:wrap;gap:3px 5px;align-items:center;min-width:0}
+.g{font:600 .98rem/1.3 var(--f-ui);color:#fff}
+.o{font:600 .76rem/1.2 var(--f-ui);padding:2px 5px;border:1px solid #38486a;background:#172033;color:#cfd8e6}
+.o.pot{border-color:var(--gold);color:var(--gold)}
+.note{margin:0;font-size:.85rem;color:#c6cfdc;line-height:1.42}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tools input,.tools select{background:#0c1322;border:1px solid var(--edge);color:var(--text);font:500 .95rem/1.2 var(--f-body);padding:8px 10px;min-width:0}
+.tools input{flex:1 1 240px}
+.count{font:600 .85rem/1 var(--f-ui);color:var(--muted)}
+.repo{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid #27324a}
+@media (max-width:640px){.repo{grid-template-columns:minmax(0,1fr) auto}.repo code{grid-column:1/-1;grid-row:2}}
+.repo button{appearance:none;background:#0c1322;border:1px solid var(--edge);color:var(--crystal);font:700 .75rem/1 var(--f-ui);letter-spacing:.06em;padding:6px 9px;cursor:pointer}
+footer{color:var(--muted);font-size:.84rem}
+footer ul{margin:6px 0 0;padding-left:18px;columns:2}
+@media (max-width:640px){footer ul{columns:1}}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>FFXIV Plugin and Opener Sheet</h1>
+  <p class="sub">All 22 job openers from your list, checked against The Balance, unlock quests for every class and job including crafters and gatherers, plus every plugin I could find in the official and main unofficial repositories.</p>
+  <div class="stamp">Dawntrail 7.56 · Researched Oct 31, 2026 · Evercold arrives Feb 23, 2027</div>
+  <div class="switch" role="group" aria-label="Section">
+    <button type="button" data-v="openers">Openers</button>
+    <button type="button" data-v="unlocks">Job unlocks</button>
+    <button type="button" data-v="plugins">Plugin guide</button>
+    <button type="button" data-v="catalogue">Full catalogue</button>
+    <button type="button" data-v="risk">Ban risk</button>
+  </div>
+</header>
+
+<section class="view" id="openers">
+  <div class="filters" role="group" aria-label="Filter by role" id="roles"></div>
+  <div id="board-wrap" style="display:grid;gap:14px;min-width:0"></div>
+  <div class="two">
+    <div class="panel"><h3>How to read these</h3>%%HOW%%</div>
+    <div class="panel"><h3>Source check</h3>%%CHECK%%</div>
+    <div class="panel"><h3>Patterns across jobs</h3>%%PATTERNS%%</div>
+    <div class="panel"><h3>For Evercold</h3>%%EVERCOLD%%</div>
+  </div>
+</section>
+
+<section class="view" id="unlocks" hidden>
+  <div class="panel"><h3>How to unlock every job</h3>%%UNLOCKS%%</div>
+</section>
+
+<section class="view" id="plugins" hidden>
+  <div class="panel"><h3>How the ecosystem works</h3>%%ECO%%</div>
+  <div class="panel"><h3>Custom repository URLs</h3><p>Paste these under Dalamud Settings, Experimental, Custom Plugin Repositories. Only add repos you trust.</p><div id="repos"></div></div>
+  <div class="panel"><h3>Plugins that matter, by job to be done</h3>%%PLUGINS%%</div>
+</section>
+
+<section class="view" id="catalogue" hidden>
+  <div class="panel">
+    <h3>Every plugin, searchable</h3>
+    <div class="tools">
+      <input id="q" type="search" placeholder="Search name, author or description" aria-label="Search plugins">
+      <select id="src" aria-label="Filter by source"></select>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="tbl"><table><thead><tr><th>Plugin</th><th>Author</th><th>Source</th><th>API</th><th>Downloads</th><th>What it does</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note">Current Dalamud API is 15. Lower numbers will not load until updated. Descriptions are each author's own.</p>
+  </div>
+</section>
+
+<section class="view" id="risk" hidden>
+  <div class="panel"><h3>Read this before installing</h3>%%RISK%%</div>
+</section>
+
+<footer><b>Sources</b>%%SOURCES%%</footer>
+</div>
+
+<script id="data" type="application/json">%%DATA%%</script>
+<script>
+(function(){
+  var D=JSON.parse(document.getElementById('data').textContent);
+  var esc=function(t){var d=document.createElement('div');d.textContent=t==null?'':t;return d.innerHTML};
+
+  // views
+  var btns=[].slice.call(document.querySelectorAll('.switch button'));
+  function show(v){
+    btns.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===v))});
+    ['openers','unlocks','plugins','catalogue','risk'].forEach(function(id){document.getElementById(id).hidden=id!==v});
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.v)})});
+  var h=(location.hash||'').slice(1);
+  show(['openers','unlocks','plugins','catalogue','risk'].indexOf(h)>=0?h:'openers');
+
+  // openers
+  function chip(o){return '<span class="o'+(/^Pot/.test(o)?' pot':'')+'">'+esc(o)+'</span>'}
+  function jobCard(j){
+    var body=j.blocks.map(function(b){
+      if(b.pre) return '<div class="pre"><b>Pre-pull</b>'+esc(b.pre)+'</div>';
+      if(b.sub) return '<div class="sub-h">'+b.sub+'</div>';
+      if(b.note) return '<p class="note">'+b.note+'</p>';
+      return '<ol class="seq">'+b.seq.map(function(s){
+        return '<li><span class="n">'+esc(s.n.replace(' to ','–').replace(' onward','+'))+'</span><div class="act">'+s.o0.map(chip).join('')+'<span class="g">'+esc(s.a)+'</span>'+s.o.map(chip).join('')+'</div></li>'
+      }).join('')+'</ol>';
+    }).join('');
+    return '<article class="job '+j.role+'"><div class="job-h"><h4>'+esc(j.name)+'</h4><span>'+esc(j.meta)+'</span>'+(j.better?'<span class="newer">Newer than your link</span>':'')+'</div><div class="job-b">'+body+'</div></article>';
+  }
+  var groups=[];D.jobs.forEach(function(j){if(groups.indexOf(j.group)<0)groups.push(j.group)});
+  var wrap=document.getElementById('board-wrap'),roles=document.getElementById('roles');
+  function drawJobs(g){
+    wrap.innerHTML=groups.filter(function(x){return g==='All'||x===g}).map(function(x){
+      return '<h2 class="group">'+esc(x)+'</h2><div class="board">'+D.jobs.filter(function(j){return j.group===x}).map(jobCard).join('')+'</div>';
+    }).join('');
+    [].forEach.call(roles.children,function(b){b.setAttribute('aria-pressed',String(b.textContent===g))});
+  }
+  ['All'].concat(groups).forEach(function(g){
+    var b=document.createElement('button');b.type='button';b.textContent=g;
+    b.addEventListener('click',function(){drawJobs(g)});roles.appendChild(b);
+  });
+  drawJobs('All');
+
+  // repos
+  document.getElementById('repos').innerHTML=D.repos.map(function(r){
+    return '<div class="repo"><b>'+esc(r[0])+'</b><code>'+esc(r[1])+'</code><button type="button" data-u="'+esc(r[1]).replace(/"/g,'&quot;')+'">Copy</button></div>';
+  }).join('');
+  document.getElementById('repos').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    var done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)};
+    var fall=function(){var r=document.createRange();r.selectNodeContents(b.previousElementSibling);var s=getSelection();s.removeAllRanges();s.addRange(r)};
+    try{navigator.clipboard.writeText(b.dataset.u).then(done,fall)}catch(x){fall()}
+  });
+
+  // catalogue
+  var q=document.getElementById('q'),src=document.getElementById('src'),rows=document.getElementById('rows'),count=document.getElementById('count');
+  var sources=[];D.cat.forEach(function(r){var s=/^Puni: /.test(r[2])?'Puni.sh publishers':r[2];if(sources.indexOf(s)<0)sources.push(s)});
+  src.innerHTML='<option value="">All sources</option>'+sources.sort().map(function(s){return '<option>'+esc(s)+'</option>'}).join('');
+  function draw(){
+    var t=q.value.trim().toLowerCase(),s=src.value;
+    var hit=D.cat.filter(function(r){
+      var rs=/^Puni: /.test(r[2])?'Puni.sh publishers':r[2];
+      return (!s||rs===s)&&(!t||(r[0]+' '+r[1]+' '+r[5]).toLowerCase().indexOf(t)>=0);
+    });
+    count.textContent=hit.length+' of '+D.cat.length;
+    rows.innerHTML=hit.map(function(r){
+      return '<tr><td><b>'+esc(r[0])+'</b></td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td><td class="num">'+esc(r[3])+'</td><td class="num">'+(r[4]?Number(r[4]).toLocaleString():'')+'</td><td>'+esc(r[5])+'</td></tr>';
+    }).join('');
+  }
+  q.addEventListener('input',draw);src.addEventListener('change',draw);draw();
+})();
+</script>
