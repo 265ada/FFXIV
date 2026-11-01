@@ -81,6 +81,11 @@ ol.seq li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-it
 footer{color:var(--muted);font-size:.84rem}
 footer ul{margin:6px 0 0;padding-left:18px;columns:2}
 @media (max-width:640px){footer ul{columns:1}}
+.jobname{cursor:help;border-bottom:1px dotted var(--crystal)}
+.jobtip{position:fixed;z-index:50;width:min(340px,calc(100vw - 16px));background:#0c1322;border:1px solid var(--crystal);box-shadow:0 14px 34px rgba(0,0,0,.65);padding:11px 13px;display:grid;gap:5px;pointer-events:none}
+.jt-name{font:400 1.15rem/1.1 var(--f-display);color:#fff}
+.jt-sub{font:600 .78rem/1.3 var(--f-ui);letter-spacing:.04em;color:var(--gold)}
+.jt-text{font-size:.88rem;line-height:1.45;color:#d7deea}
 </style>
 
 <div class="wrap">
@@ -206,3 +211,4 @@ footer ul{margin:6px 0 0;padding-left:18px;columns:2}
   q.addEventListener('input',draw);src.addEventListener('change',draw);draw();
 })();
 </script>
+<script src="job-info.js"></script>
